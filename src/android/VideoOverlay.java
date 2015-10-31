@@ -18,7 +18,7 @@ public class VideoOverlay extends ViewGroup {
     private MediaRecorder recorder = null;
     private Camera camera = null;
     private int cameraId;
-    private int cameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private int cameraFacing = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private String filePath = "";
 
     private boolean inPreview = false;
@@ -180,11 +180,13 @@ public class VideoOverlay extends ViewGroup {
     private void setProfile(MediaRecorder mediaRecorder, Camera.Parameters parameters){
         CamcorderProfile profile;
 
-        if(CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_LOW)) {
+/*        if(CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_LOW)) {
             profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_LOW);
         } else {
             profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_HIGH);
-        }
+        }*/
+
+            profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_HIGH);
 
         if(currentSize == null){
             currentSize = CameraHelper.getLowestResolution(parameters);
