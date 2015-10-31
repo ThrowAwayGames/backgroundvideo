@@ -26,16 +26,23 @@
     
     self.token = [command.arguments objectAtIndex:0];
     self.camera = [command.arguments objectAtIndex:1];
+    self.px = [[command.arguments objectAtIndex:2] intValue];
+    self.py = [[command.arguments objectAtIndex:3] intValue];
+    self.pw = [[command.arguments objectAtIndex:4] intValue];
+    self.ph = [[command.arguments objectAtIndex:5] intValue];
+    self.rw = [[command.arguments objectAtIndex:6] intValue];
+    self.rh = [[command.arguments objectAtIndex:7] intValue];
+	int barh = (self.rh - 360.0) * ((self.ph + 0.0) / self.rh) / 2;
     
     //get rid of the old dumb view (causes issues if the app is resumed)
     self.parentView = nil;
     
     //make the view
     CGRect viewRect = CGRectMake(
-                                 1,
-                                 1,
-                                 self.webView.superview.frame.size.width,
-                                 self.webView.superview.frame.size.height
+                                 self.px,
+                                 self.py,
+                                 self.pw,
+                                 self.ph
                                  );
     self.parentView = [[UIView alloc] initWithFrame:viewRect];
     [self.webView.superview addSubview:self.parentView];
@@ -43,14 +50,13 @@
     self.parentView.backgroundColor = [UIColor clearColor];
     self.view = [[UIView alloc] initWithFrame: self.parentView.bounds];
     [self.parentView addSubview: view];
-    view.alpha = 0.2f;
     self.parentView.userInteractionEnabled = NO;
     
     //camera stuff
     
     //Capture session
     session = [[AVCaptureSession alloc] init];
-    [session setSessionPreset:AVCaptureSessionPresetLow];
+    [session setSessionPreset:AVCaptureSessionPreset640x480];
     
     //Get the front camera and set the capture device
     AVCaptureDevice *inputDevice = [self getCamera: self.camera];
@@ -61,7 +67,7 @@
     NSURL *fileURI = [[NSURL alloc] initFileURLWithPath:outputPath];
     
     //capture device output
-    CMTime maxDuration = CMTimeMakeWithSeconds(1800, 1);
+    CMTime maxDuration = CMTimeMakeWithSeconds(300, 1);
     
     output = [[AVCaptureMovieFileOutput alloc]init];
     output.maxRecordedDuration = maxDuration;
@@ -89,25 +95,27 @@
     
     CALayer *rootLayer = [[self view] layer];
     [rootLayer setMasksToBounds:YES];
-    [self.previewLayer setFrame:CGRectMake(-70, 0, rootLayer.bounds.size.height, rootLayer.bounds.size.height)];
+    [self.previewLayer setFrame:CGRectMake(0, barh, self.pw, self.ph - 2*barh)];
     [rootLayer insertSublayer:self.previewLayer atIndex:0];
     
     //go
+    NSLog(@"it started recording");
     [session startRunning];
     [output startRecordingToOutputFileURL:fileURI recordingDelegate:self ];
     
     //return true to ensure callback fires
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    
 }
 
 - (void)stop:(CDVInvokedUrlCommand *)command
 {
+    NSLog(@"stopping the recording");
+    [self.previewLayer removeFromSuperlayer];
     [output stopRecording];
+    [session stopRunning];
     self.view.alpha = 0;
-    
-    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:outputPath];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 -(NSString*)getFileName
@@ -116,7 +124,7 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *libPath = [self getLibraryPath];
     
-    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
+    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@%@", libPath, self.token, FileExtension];
     
     while ([fileManager fileExistsAtPath:tempPath]) {
         tempPath = [NSString stringWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
@@ -131,6 +139,7 @@
     NSArray *lib = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
     NSString *library = [lib objectAtIndex:0];
     return [NSString stringWithFormat:@"%@/NoCloud/", library];
+    
 }
 
 -(AVCaptureDevice *)getCamera: (NSString *)camera
@@ -139,7 +148,7 @@
     AVCaptureDevice *captureDevice = nil;
     for (AVCaptureDevice *device in videoDevices)
     {
-        if([camera caseInsensitiveCompare:@"front"] == NSOrderedSame)
+        if([camera isEqualToString:@"front"])
         {
             if (device.position == AVCaptureDevicePositionFront )
             {
@@ -147,7 +156,7 @@
                 break;
             }
         }
-        else if ([camera caseInsensitiveCompare:@"BACK"] == NSOrderedSame)
+        else if ([camera isEqualToString:@"back"])
         {
             if (device.position == AVCaptureDevicePositionBack )
             {

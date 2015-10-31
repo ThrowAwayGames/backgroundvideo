@@ -24,10 +24,14 @@ public class VideoOverlay extends ViewGroup {
     private boolean inPreview = false;
     private boolean viewIsAttached = false;
     private Camera.Size currentSize;
+	
+	private int cameraWidth;
+	private int cameraHeight;
 
-
-    public VideoOverlay(Context context, String filePath) {
+    public VideoOverlay(Context context, String filePath, int w, int h) {
         super(context);
+		cameraWidth = w;
+		cameraHeight = h;
         this.filePath = filePath;
         preview = getPreview();
         addView(preview.getView());
@@ -161,7 +165,7 @@ public class VideoOverlay extends ViewGroup {
 
     private void setCameraParameters(Camera camera, Camera.Parameters parameters){
         currentSize = CameraHelper.getPreviewSize(parameters);
-        parameters.setPreviewSize(currentSize.width, currentSize.height);
+        parameters.setPreviewSize(cameraWidth, cameraHeight);
 
         parameters.setRotation(90);
 
@@ -187,8 +191,8 @@ public class VideoOverlay extends ViewGroup {
         }
 
 
-        profile.videoFrameWidth = currentSize.width;
-        profile.videoFrameHeight = currentSize.height;
+        profile.videoFrameWidth = cameraWidth;
+        profile.videoFrameHeight = cameraHeight;
 
         mediaRecorder.setProfile(profile);
     }
@@ -201,7 +205,7 @@ public class VideoOverlay extends ViewGroup {
                 addView(preview.getView());
             } else {
                 previewAvailable();
-                initPreview(getHeight(), getWidth());
+                initPreview(cameraWidth, cameraHeight);
                 if (startRecording)
                     startRecording();
                 inPreview = true;

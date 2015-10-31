@@ -1,9 +1,9 @@
 package io.iclue.backgroundvideo;
 
-import android.view.WindowManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import org.apache.cordova.CallbackContext;
@@ -27,6 +27,8 @@ public class BackgroundVideo extends CordovaPlugin {
     //private final static float opacity = 0.3f;
     private VideoOverlay videoOverlay;
     private RelativeLayout relativeLayout;
+	private View barTop;
+ 	private View barBottom;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -43,37 +45,37 @@ public class BackgroundVideo extends CordovaPlugin {
             if(ACTION_START_RECORDING.equals(action)) {
                 FILE_NAME = args.getString(0);
                 String CAMERA_FACE = args.getString(1);
+                final int x = Integer.parseInt(args.getString(2));
+                final int y = Integer.parseInt(args.getString(3));
+                final int w = Integer.parseInt(args.getString(4));
+                final int h = Integer.parseInt(args.getString(5));
+                final int rw = Integer.parseInt(args.getString(6));
+                final int rh = Integer.parseInt(args.getString(7));
+				final int barh = (rh - 360) * (h / rh) / 2;
 
                 if(videoOverlay == null) {
-                    videoOverlay = new VideoOverlay(cordova.getActivity(), getFilePath());
+                    videoOverlay = new VideoOverlay(cordova.getActivity(), getFilePath(), rh, rw);
                     videoOverlay.setCameraFacing(CAMERA_FACE);
-
-                    //NOTE: Now wrapping view in relative layout because GT-I9300 testing
-                    //      the overlay required wrapping for setAlpha to work.
-                    if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
-                        relativeLayout = new RelativeLayout(cordova.getActivity());
-                        relativeLayout.setAlpha(0.2f);
-                    }
-
-                    //Get screen dimensions
-                    DisplayMetrics displaymetrics = new DisplayMetrics();
-                    cordova.getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                    final int height = displaymetrics.heightPixels;
-                    final int width = displaymetrics.widthPixels;
+					videoOverlay.setTranslationX(x);
+					videoOverlay.setTranslationY(y);
+					
+					barTop = new View(cordova.getActivity());
+					barTop.setBackgroundColor(0xFF455A64);
+					barTop.setTranslationX(x);
+					barTop.setTranslationY(y);
+					barBottom = new View(cordova.getActivity());
+					barBottom.setBackgroundColor(0xFF455A64);
+					barBottom.setTranslationX(x);
+					barBottom.setTranslationY(y + h - barh);
 
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            cordova.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//                            webView.setKeepScreenOn(true); //do via another plugin?
                             try {
-                                if(videoOverlay.getViewType() == PreviewType.TEXTURE_VIEW) {
-                                    relativeLayout.addView(videoOverlay, new ViewGroup.LayoutParams(width, height));
-                                    cordova.getActivity().addContentView(relativeLayout, new ViewGroup.LayoutParams(width, height));
-                                    //cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(webView.getWidth(), webView.getHeight()));
-                                } else {
-                                    // Set to 1 because we cannot have a transparent surface view, therefore view is not shown / tiny.
-                                    cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(1, 1));
-                                }
+								cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(w, h));
+								cordova.getActivity().addContentView(barTop, new ViewGroup.LayoutParams(w, barh));
+								cordova.getActivity().addContentView(barBottom, new ViewGroup.LayoutParams(w, barh));
                             } catch(Exception e) {
                                 Log.e(TAG, "Error during preview create", e);
                                 callbackContext.error(TAG + ": " + e.getMessage());
@@ -83,12 +85,15 @@ public class BackgroundVideo extends CordovaPlugin {
                 } else {
                     videoOverlay.setCameraFacing(CAMERA_FACE);
                     videoOverlay.setFilePath(getFilePath());
+					
 
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 videoOverlay.startPreview(true);
+								barTop.setBackgroundColor(0xFF455A64);
+								barBottom.setBackgroundColor(0xFF455A64);
                             } catch(Exception e) {
                                 Log.e(TAG, "Error during preview create", e);
                                 callbackContext.error(TAG + ": " + e.getMessage());
@@ -106,10 +111,13 @@ public class BackgroundVideo extends CordovaPlugin {
                         public void run() {
                             if(videoOverlay != null)
                                 videoOverlay.onPause();
+								if(barTop != null)
+									barTop.setBackgroundColor(0x00000000);
+								if(barBottom != null)
+									barBottom.setBackgroundColor(0x00000000);
                         }
                     });
                 }
-                callbackContext.success(getFilePath());
                 return true;
             }
 
@@ -137,7 +145,7 @@ public class BackgroundVideo extends CordovaPlugin {
     }
 
     //Plugin Method Overrides
-    @Override
+    /*@Override
     public void onPause(boolean multitasking) {
         if(videoOverlay != null)
             videoOverlay.onPause();
@@ -149,7 +157,7 @@ public class BackgroundVideo extends CordovaPlugin {
         super.onResume(multitasking);
         if(videoOverlay != null)
             videoOverlay.onResume();
-    }
+    }*/
 
     @Override
     public void onDestroy() {

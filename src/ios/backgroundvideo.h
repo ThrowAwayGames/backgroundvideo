@@ -18,6 +18,12 @@
 @property NSString *token;
 @property (assign) BOOL isFinished;
 @property NSString *camera;
+@property int px;
+@property int py;
+@property int pw;
+@property int ph;
+@property int rw;
+@property int rh;
 
 - (void)start:(CDVInvokedUrlCommand *)command;
 - (void)stop:(CDVInvokedUrlCommand *)command;
