@@ -18,7 +18,7 @@ public class VideoOverlay extends ViewGroup {
     private MediaRecorder recorder = null;
     private Camera camera = null;
     private int cameraId;
-    private int cameraFacing = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private int cameraFacing = Camera.CameraInfo.CAMERA_FACING_BACK;
     private String filePath = "";
 
     private boolean inPreview = false;
