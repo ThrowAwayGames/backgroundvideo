@@ -87,7 +87,7 @@ public class VideoOverlay extends ViewGroup {
 
             setProfile(recorder, cameraParameters);
             recorder.setOutputFile(filePath);
-            recorder.setOrientationHint(90);
+            //recorder.setOrientationHint(90);
 
             preview.attach(recorder);
             recorder.prepare();
