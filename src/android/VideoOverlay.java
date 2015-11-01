@@ -88,7 +88,7 @@ public class VideoOverlay extends ViewGroup {
 
             setProfile(recorder, cameraParameters);
             recorder.setOutputFile(filePath);
-            //recorder.setOrientationHint(90);
+            recorder.setOrientationHint(90);
 
             preview.attach(recorder);
             recorder.prepare();
@@ -175,7 +175,7 @@ public class VideoOverlay extends ViewGroup {
         currentSize = CameraHelper.getPreviewSize(parameters);
         parameters.setPreviewSize(cameraWidth, cameraHeight);
 
-        //parameters.setRotation(90);
+        parameters.setRotation(90);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             parameters.setRecordingHint(true);
