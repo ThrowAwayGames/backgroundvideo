@@ -141,20 +141,6 @@ public class VideoOverlay extends ViewGroup {
     }
 
 
-    public static void setCameraDisplayOrientation(int cameraId, android.hardware.Camera camera) {
-
-        android.hardware.Camera.CameraInfo info =
-            new android.hardware.Camera.CameraInfo();
-
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-
-        int degrees = 90;
-
-        int result;
-        result = (info.orientation - degrees + 360) % 360;
-        //VideoWithSurfaceVw.orientation=result;
-        camera.setDisplayOrientation(result);
-    }
 
     private Preview getPreview() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
