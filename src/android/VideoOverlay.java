@@ -79,6 +79,9 @@ public class VideoOverlay extends ViewGroup {
 
             recorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
             recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            recorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
+            recorder.setVideoSize(cameraWidth, cameraHeight);
             recorder.setVideoFrameRate(30);
             recorder.setVideoEncodingBitRate(500000);
 
