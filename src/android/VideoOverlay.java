@@ -191,7 +191,7 @@ public class VideoOverlay extends ViewGroup {
             profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_HIGH);
         }*/
 
-        profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_420P);
+        profile = CamcorderProfile.get(cameraId, CamcorderProfile.QUALITY_480P);
 
         if(currentSize == null){
             currentSize = CameraHelper.getLowestResolution(parameters);
