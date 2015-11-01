@@ -74,7 +74,6 @@ public class VideoOverlay extends ViewGroup {
         camera.unlock();
 
         try {
-            setCameraDisplayOrientation(0,camera);
 
             recorder = new MediaRecorder();
             recorder.setCamera(camera);
