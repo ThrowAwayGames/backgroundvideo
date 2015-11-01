@@ -79,10 +79,10 @@ public class VideoOverlay extends ViewGroup {
 
             recorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
             recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-            recorder.setVideoFrameRate(30);
-            recorder.setVideoEncodingBitRate(500000);
+//            recorder.setVideoFrameRate(30);
+//            recorder.setVideoEncodingBitRate(500000);
 
-//            setProfile(recorder, cameraParameters);
+            setProfile(recorder, cameraParameters);
             recorder.setOutputFile(filePath);
             recorder.setOrientationHint(90);
 
