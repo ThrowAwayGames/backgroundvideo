@@ -200,6 +200,7 @@ public class VideoOverlay extends ViewGroup {
 
         profile.videoFrameWidth = cameraWidth;
         profile.videoFrameHeight = cameraHeight;
+        profile.videoBitRate = 500000;
 
         mediaRecorder.setProfile(profile);
     }
