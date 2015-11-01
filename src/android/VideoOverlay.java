@@ -182,7 +182,7 @@ public class VideoOverlay extends ViewGroup {
         }
 
         camera.setParameters(parameters);
-        //camera.setDisplayOrientation(90);
+        camera.setDisplayOrientation(90);
     }
 
     private void setProfile(MediaRecorder mediaRecorder, Camera.Parameters parameters){
