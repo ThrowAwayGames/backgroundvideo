@@ -152,7 +152,7 @@ public class VideoOverlay extends ViewGroup {
 
         int result;
         result = (info.orientation - degrees + 360) % 360;
-        VideoWithSurfaceVw.orientation=result;
+        //VideoWithSurfaceVw.orientation=result;
         camera.setDisplayOrientation(result);
     }
 
