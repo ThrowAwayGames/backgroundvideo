@@ -27,7 +27,7 @@ public class BackgroundVideo extends CordovaPlugin {
     //private final static float opacity = 0.3f;
     private VideoOverlay videoOverlay;
     private RelativeLayout relativeLayout;
-//	private View barTop;
+	private View barTop;
  	private View barBottom;
 
     @Override
@@ -51,7 +51,7 @@ public class BackgroundVideo extends CordovaPlugin {
                 final int h = Integer.parseInt(args.getString(5));
                 final int rw = Integer.parseInt(args.getString(6));
                 final int rh = Integer.parseInt(args.getString(7));
-				final int barh = (rh - 360) * (h / rh) / 2;
+		final int barh = (rh - 360) * (h / rh) / 2;
 
                 if(videoOverlay == null) {
                     videoOverlay = new VideoOverlay(cordova.getActivity(), getFilePath(), rh, rw);
@@ -59,10 +59,10 @@ public class BackgroundVideo extends CordovaPlugin {
 					videoOverlay.setTranslationX(x);
 					videoOverlay.setTranslationY(y);
 					
-					//barTop = new View(cordova.getActivity());
-					//barTop.setBackgroundColor(0xFF455A64);
-					//barTop.setTranslationX(x);
-					//barTop.setTranslationY(y);
+					barTop = new View(cordova.getActivity());
+					barTop.setBackgroundColor(0xFF455A64);
+					barTop.setTranslationX(x);
+					barTop.setTranslationY(y);
 					barBottom = new View(cordova.getActivity());
 					barBottom.setBackgroundColor(0xFF455A64);
 					barBottom.setTranslationX(x);
@@ -74,7 +74,7 @@ public class BackgroundVideo extends CordovaPlugin {
 //                            webView.setKeepScreenOn(true); //do via another plugin?
                             try {
 								cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(w, h));
-							//	cordova.getActivity().addContentView(barTop, new ViewGroup.LayoutParams(w, barh));
+								cordova.getActivity().addContentView(barTop, new ViewGroup.LayoutParams(w, barh));
 								cordova.getActivity().addContentView(barBottom, new ViewGroup.LayoutParams(w, barh));
                             } catch(Exception e) {
                                 Log.e(TAG, "Error during preview create", e);
@@ -92,7 +92,7 @@ public class BackgroundVideo extends CordovaPlugin {
                         public void run() {
                             try {
                                 videoOverlay.startPreview(true);
-				//barTop.setBackgroundColor(0xFF455A64);
+				barTop.setBackgroundColor(0xFF455A64);
 				barBottom.setBackgroundColor(0xFF455A64);
                             } catch(Exception e) {
                                 Log.e(TAG, "Error during preview create", e);
@@ -111,8 +111,8 @@ public class BackgroundVideo extends CordovaPlugin {
                         public void run() {
                             if(videoOverlay != null)
                                 videoOverlay.onPause();
-				//if(barTop != null)
-				//	barTop.setBackgroundColor(0x00000000);
+				if(barTop != null)
+					barTop.setBackgroundColor(0x00000000);
 				if(barBottom != null)
 					barBottom.setBackgroundColor(0x00000000);
                         }
