@@ -51,7 +51,7 @@ public class BackgroundVideo extends CordovaPlugin {
                 final int h = Integer.parseInt(args.getString(5));
                 final int rw = Integer.parseInt(args.getString(6));
                 final int rh = Integer.parseInt(args.getString(7));
-		final int barh = (rh - 320) * (h / rh) / 2;
+		final int barh = (rh - 400) * (h / rh) / 2;
 
                 if(videoOverlay == null) {
                     videoOverlay = new VideoOverlay(cordova.getActivity(), getFilePath(), rh, rw);
