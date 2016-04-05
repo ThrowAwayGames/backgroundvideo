@@ -24,7 +24,7 @@ public class TextureViewPreview implements Preview, TextureView.SurfaceTextureLi
         Log.d(TAG, "Creating Texture Preview");
         this.overlay = overlay;
 
-        setContentView(R.layout.texture_video_crop);
+        setContentView(android.R.layout.texture_video_crop);
 
 
         view = new TextureView(overlay.getContext());
