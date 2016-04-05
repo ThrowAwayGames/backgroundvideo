@@ -1,5 +1,7 @@
 package io.iclue.backgroundvideo;
 
+import android.graphics.Matrix;
+
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
