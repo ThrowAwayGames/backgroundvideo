@@ -46,7 +46,7 @@ int viewHeight = mVideoHeight - 360;
     }
 
     // Calculate pivot points, in our case crop from center
-    int pivotPointX = viewWidth / 2;
+    int pivotPointX = viewWidth / 3;
     int pivotPointY = viewHeight / 2;
 
     Matrix matrix = new Matrix();
