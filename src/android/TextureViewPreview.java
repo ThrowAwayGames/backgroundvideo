@@ -22,6 +22,37 @@ public class TextureViewPreview implements Preview, TextureView.SurfaceTextureLi
         Log.d(TAG, "Creating Texture Preview");
         this.overlay = overlay;
         view = new TextureView(overlay.getContext());
+
+/**/
+    float scaleX = 1.0f;
+    float scaleY = 1.0f;
+int mVideoWidth = 360;
+int mVideoHeight = 720;
+int viewWidth = mVideoWidth - 180;
+int viewHeight = mVideoHeight - 360;
+
+    if (mVideoWidth > viewWidth && mVideoHeight > viewHeight) {
+        scaleX = mVideoWidth / viewWidth;
+        scaleY = mVideoHeight / viewHeight;
+    } else if (mVideoWidth < viewWidth && mVideoHeight < viewHeight) {
+        scaleY = viewWidth / mVideoWidth;
+        scaleX = viewHeight / mVideoHeight;
+    } else if (viewWidth > mVideoWidth) {
+        scaleY = (viewWidth / mVideoWidth) / (viewHeight / mVideoHeight);
+    } else if (viewHeight > mVideoHeight) {
+        scaleX = (viewHeight / mVideoHeight) / (viewWidth / mVideoWidth);
+    }
+
+    // Calculate pivot points, in our case crop from center
+    int pivotPointX = viewWidth / 2;
+    int pivotPointY = viewHeight / 2;
+
+    Matrix matrix = new Matrix();
+    matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);
+
+    view.setTransform(matrix);
+/**/
+
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         view.setClickable(false);
         view.setSurfaceTextureListener(this);
