@@ -58,7 +58,7 @@ public class BackgroundVideo extends CordovaPlugin {
                     videoOverlay.setCameraFacing(CAMERA_FACE);
 					videoOverlay.setTranslationX(x);
 					videoOverlay.setTranslationY(y);
-					
+					videoOverlay.setBackgroundColor(0xFF00FF00);
 					//barTop = new View(cordova.getActivity());
 					//barTop.setBackgroundColor(0xFF455A64);
 					//barTop.setBackgroundColor(0xFFff0000);
