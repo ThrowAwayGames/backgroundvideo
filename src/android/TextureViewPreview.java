@@ -23,15 +23,19 @@ public class TextureViewPreview implements Preview, TextureView.SurfaceTextureLi
     public TextureViewPreview (VideoOverlay overlay) {
         Log.d(TAG, "Creating Texture Preview");
         this.overlay = overlay;
+
+        setContentView(R.layout.texture_video_crop);
+
+
         view = new TextureView(overlay.getContext());
 
-/**/
-    float scaleX = 1.0f;
-    float scaleY = 2.0f;
-int mVideoWidth = 360;
-int mVideoHeight = 720;
-int viewWidth = mVideoWidth - 180;
-int viewHeight = mVideoHeight - 360;
+	/**/
+	float scaleX = 1.0f;
+	float scaleY = 2.0f;
+	int mVideoWidth = 360;
+	int mVideoHeight = 720;
+	int viewWidth = mVideoWidth - 180;
+	int viewHeight = mVideoHeight - 360;
 
     /*if (mVideoWidth > viewWidth && mVideoHeight > viewHeight) {
         scaleX = mVideoWidth / viewWidth;
@@ -46,14 +50,14 @@ int viewHeight = mVideoHeight - 360;
     }*/
 
     // Calculate pivot points, in our case crop from center
-    int pivotPointX = viewWidth / 2;
-    int pivotPointY = viewHeight / 2;
+	int pivotPointX = viewWidth / 2;
+	int pivotPointY = viewHeight / 2;
 
-    Matrix matrix = new Matrix();
-    matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);
+	Matrix matrix = new Matrix();
+	matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);
 
-    view.setTransform(matrix);
-/**/
+	view.setTransform(matrix);
+	/**/
 
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         view.setClickable(false);
