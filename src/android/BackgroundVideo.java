@@ -28,7 +28,7 @@ public class BackgroundVideo extends CordovaPlugin {
     private VideoOverlay videoOverlay;
     private RelativeLayout relativeLayout;
 	//private View barTop;
- 	private View barBottom;
+ 	//private View barBottom;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -64,12 +64,12 @@ public class BackgroundVideo extends CordovaPlugin {
 					//barTop.setBackgroundColor(0xFFff0000);
 					//barTop.setTranslationX(x);
 					//barTop.setTranslationY(y);
-					barBottom = new View(cordova.getActivity());
+					//barBottom = new View(cordova.getActivity());
 					//barBottom.setBackgroundColor(0xFF455A64);
-					barBottom.setBackgroundColor(0xFFff0000);
-					barBottom.setTranslationX(x);
+					//barBottom.setBackgroundColor(0xFFff0000);
+					//barBottom.setTranslationX(x);
 					//barBottom.setTranslationY(y + h - barh);
-					barBottom.setTranslationY(0);
+					//barBottom.setTranslationY(y + h - barh);
 
                     cordova.getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -78,7 +78,7 @@ public class BackgroundVideo extends CordovaPlugin {
                             try {
 					cordova.getActivity().addContentView(videoOverlay, new ViewGroup.LayoutParams(w, h));
 					//cordova.getActivity().addContentView(barTop, new ViewGroup.LayoutParams(w, barh));
-					cordova.getActivity().addContentView(barBottom, new ViewGroup.LayoutParams(w, barh+40));
+					//cordova.getActivity().addContentView(barBottom, new ViewGroup.LayoutParams(w, barh+40));
                             } catch(Exception e) {
                                 Log.e(TAG, "Error during preview create", e);
                                 callbackContext.error(TAG + ": " + e.getMessage());
@@ -98,7 +98,7 @@ public class BackgroundVideo extends CordovaPlugin {
 				//barTop.setBackgroundColor(0xFF455A64);
 				//barTop.setBackgroundColor(0xFFff0000);
 				//barBottom.setBackgroundColor(0xFF455A64);
-				barBottom.setBackgroundColor(0xFFff0000);
+				//barBottom.setBackgroundColor(0xFFff0000);
                             } catch(Exception e) {
                                 Log.e(TAG, "Error during preview create", e);
                                 callbackContext.error(TAG + ": " + e.getMessage());
@@ -118,8 +118,8 @@ public class BackgroundVideo extends CordovaPlugin {
                                 videoOverlay.onPause();
 				//if(barTop != null)
 				//	barTop.setBackgroundColor(0x00000000);
-				if(barBottom != null)
-					barBottom.setBackgroundColor(0x00000000);
+				//if(barBottom != null)
+				//	barBottom.setBackgroundColor(0x00000000);
                         }
                     });
                 }
