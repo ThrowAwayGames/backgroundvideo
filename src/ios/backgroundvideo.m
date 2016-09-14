@@ -10,11 +10,12 @@
 @synthesize webView;
 #endif
 
--(CDVPlugin*) initWithWebView:(UIWebView*)theWebView
-{
-    self = (backgroundvideo*)[super initWithWebView:theWebView];
-    return self;
-}
+//no longer needed for cordova platform 4+
+// -(CDVPlugin*) initWithWebView:(UIWebView*)theWebView
+// {
+//     self = (backgroundvideo*)[super initWithWebView:theWebView];
+//     return self;
+// }
 
 #pragma mark -
 #pragma mark backgroundvideo
@@ -23,7 +24,7 @@
 {
     //stop the device from being able to sleep
     [UIApplication sharedApplication].idleTimerDisabled = YES;
-    
+
     self.token = [command.arguments objectAtIndex:0];
     self.camera = [command.arguments objectAtIndex:1];
     self.px = [[command.arguments objectAtIndex:2] intValue];
@@ -36,7 +37,7 @@
     
     //get rid of the old dumb view (causes issues if the app is resumed)
     self.parentView = nil;
-    
+
     //make the view
     CGRect viewRect = CGRectMake(
                                  self.px,
@@ -46,63 +47,63 @@
                                  );
     self.parentView = [[UIView alloc] initWithFrame:viewRect];
     [self.webView.superview addSubview:self.parentView];
-    
+
     self.parentView.backgroundColor = [UIColor clearColor];
     self.view = [[UIView alloc] initWithFrame: self.parentView.bounds];
     [self.parentView addSubview: view];
     self.parentView.userInteractionEnabled = NO;
-    
+
     //camera stuff
-    
+
     //Capture session
     session = [[AVCaptureSession alloc] init];
     [session setSessionPreset:AVCaptureSessionPreset640x480];
     
     //Get the front camera and set the capture device
     AVCaptureDevice *inputDevice = [self getCamera: self.camera];
-    
-    
+
+
     //write the file
     outputPath = [self getFileName];
     NSURL *fileURI = [[NSURL alloc] initFileURLWithPath:outputPath];
-    
+
     //capture device output
-    CMTime maxDuration = CMTimeMakeWithSeconds(300, 1);
-    
+    CMTime maxDuration = CMTimeMakeWithSeconds(1800, 1);
+
     output = [[AVCaptureMovieFileOutput alloc]init];
     output.maxRecordedDuration = maxDuration;
-    
-    
+
+
     if ( [session canAddOutput:output])
         [session addOutput:output];
-    
+
     //Capture audio input
     AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioCaptureDevice error:nil];
-    
+
     if ([session canAddInput:audioInput])
         [session addInput:audioInput];
-    
+
     //Capture device input
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:inputDevice error:nil];
     if ( [session canAddInput:deviceInput] )
         [session addInput:deviceInput];
-    
-    
+
+
     //preview view
     self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
     [self.previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-    
+
     CALayer *rootLayer = [[self view] layer];
     [rootLayer setMasksToBounds:YES];
     [self.previewLayer setFrame:CGRectMake(0, barh, self.pw, self.ph - 2*barh)];
     [rootLayer insertSublayer:self.previewLayer atIndex:0];
-    
+
     //go
     NSLog(@"it started recording");
     [session startRunning];
     [output startRecordingToOutputFileURL:fileURI recordingDelegate:self ];
-    
+
     //return true to ensure callback fires
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -116,6 +117,9 @@
     [output stopRecording];
     [session stopRunning];
     self.view.alpha = 0;
+
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:outputPath];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 -(NSString*)getFileName
@@ -123,14 +127,14 @@
     int fileNameIncrementer = 1;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *libPath = [self getLibraryPath];
-    
-    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@%@", libPath, self.token, FileExtension];
-    
+
+    NSString *tempPath = [[NSString alloc] initWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
+
     while ([fileManager fileExistsAtPath:tempPath]) {
         tempPath = [NSString stringWithFormat:@"%@%@_%i%@", libPath, self.token, fileNameIncrementer, FileExtension];
         fileNameIncrementer++;
     }
-    
+
     return tempPath;
 }
 
