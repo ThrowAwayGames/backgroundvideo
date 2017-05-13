@@ -34,8 +34,10 @@
     self.rw = [[command.arguments objectAtIndex:6] intValue];
     self.rh = [[command.arguments objectAtIndex:7] intValue];
 	int barh = (self.rh - 360.0) * ((self.ph + 0.0) / self.rh) / 2;
-    
-    //get rid of the old dumb view (causes issues if the app is resumed)
+
+    bool shouldRecordAudio = [[command.arguments objectAtIndex:8] boolValue];
+
+    //get rid of the old view (causes issues if the app is resumed)
     self.parentView = nil;
 
     //make the view
@@ -58,7 +60,7 @@
     //Capture session
     session = [[AVCaptureSession alloc] init];
     [session setSessionPreset:AVCaptureSessionPreset640x480];
-    
+
     //Get the front camera and set the capture device
     AVCaptureDevice *inputDevice = [self getCamera: self.camera];
 
@@ -77,12 +79,17 @@
     if ( [session canAddOutput:output])
         [session addOutput:output];
 
-    //Capture audio input
-    AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-    AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioCaptureDevice error:nil];
+    if(shouldRecordAudio){
 
-    if ([session canAddInput:audioInput])
-        [session addInput:audioInput];
+        //Capture audio input
+        AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+        AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioCaptureDevice error:nil];
+
+        if ([session canAddInput:audioInput])
+            [session addInput:audioInput];
+
+    }
+
 
     //Capture device input
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:inputDevice error:nil];
@@ -107,7 +114,7 @@
     //return true to ensure callback fires
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
+
 }
 
 - (void)stop:(CDVInvokedUrlCommand *)command
@@ -143,7 +150,7 @@
     NSArray *lib = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
     NSString *library = [lib objectAtIndex:0];
     return [NSString stringWithFormat:@"%@/NoCloud/", library];
-    
+
 }
 
 -(AVCaptureDevice *)getCamera: (NSString *)camera

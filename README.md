@@ -6,17 +6,17 @@
 ##How to use
 ###Install
 ```
-cordova plugin add io.iclue.backgroundvideo
+cordova plugin add https://github.com/jamesla/backgroundvideo.git
 ```
 ###Usage
 ```
-cordova.plugins.backgroundvideo.start(filename, cameradirection, successfn, errorfn);
+cordova.plugins.backgroundvideo.start(filename, cameradirection, shouldRecordAudio, successfn, errorfn);
 ```
 
 ###Getting started
 ######start recording
 ```
-cordova.plugins.backgroundvideo.start('myvideo', 'front', null, null);
+cordova.plugins.backgroundvideo.start('myvideo', 'front', true, null, null);
 ```
 ######stop recording
 ```
@@ -35,12 +35,3 @@ Please use the github issue tracker and we will come back to you as soon as we c
 
 ###Contribution
 There's lots of Android phones all with their own quirks so we'd love it if you could contribute and help us support all of the devices out there.
-
-##How to run the demo
-###
-```
-git clone https://github.com/jamesla/backgroundvideo.git
-cd backgroundvideo/demo
-cordova platform add ios
-cordova run --device
-```
